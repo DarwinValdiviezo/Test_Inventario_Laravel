@@ -4,13 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Cliente;
+use App\Models\User;
 
+/**
+ * @property \App\Models\User $user
+ */
 class Auditoria extends Model
 {
     protected $fillable = [
         'user_id', 'action', 'model_type', 'model_id', 'old_values', 'new_values', 'description', 'observacion', 'ip_address', 'user_agent'
     ];
 
+    /**
+     * Relación con el usuario
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

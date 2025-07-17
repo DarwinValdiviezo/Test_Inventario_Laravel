@@ -112,7 +112,8 @@ class CrearFacturaPrueba extends Command
         $this->info("✅ Factura de prueba creada exitosamente!");
         $this->line("ID: {$factura->id}");
         $this->line("Cliente: {$cliente->nombre}");
-        $this->line("Total: $" . number_format($factura->total, 2));
+        $this->line("Total: $" . number_format((float)
+$factura->total, 2));
         $this->line("Secuencial: {$factura->numero_secuencial}");
         $this->line("CUA: {$factura->cua}");
         $this->line("Firma Digital: " . substr($factura->firma_digital, 0, 50) . "...");

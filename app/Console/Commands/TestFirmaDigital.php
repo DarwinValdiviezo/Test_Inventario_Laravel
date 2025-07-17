@@ -59,7 +59,8 @@ class TestFirmaDigital extends Command
         
         $this->info("=== Factura #{$factura->id} ===");
         $this->line("Cliente: " . ($factura->cliente->nombre ?? 'N/A'));
-        $this->line("Total: $" . number_format($factura->total, 2));
+        $this->line("Total: $" . number_format((float)
+$factura->total, 2));
         $this->line("Emisor: " . ($factura->usuario->name ?? 'N/A'));
         
         // Generar firma digital

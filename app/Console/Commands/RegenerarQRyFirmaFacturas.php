@@ -14,7 +14,7 @@ class RegenerarQRyFirmaFacturas extends Command
     {
         $this->info('Regenerando QR y firma digital de todas las facturas...');
         $total = 0;
-        Factura::with(['detalles', 'cliente'])->chunk(50, function ($facturas) use (&$total) {
+        Factura::with(['cliente', 'detalles'])->chunk(50, function ($facturas) use (&$total) {
             foreach ($facturas as $factura) {
                 // Generar QR y firma
                 $factura->generarFirmaYQR();

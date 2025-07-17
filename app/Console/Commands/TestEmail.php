@@ -43,7 +43,8 @@ class TestEmail extends Command
 
             $this->info("Factura encontrada: #{$factura->getNumeroFormateado()}");
             $this->info("Cliente: {$factura->cliente->nombre}");
-            $this->info("Total: $" . number_format($factura->total, 2));
+            $this->info("Total: $" . number_format((float)
+$factura->total, 2));
 
             // Verificar configuración de email
             $emailService = new EmailService();
@@ -56,7 +57,8 @@ class TestEmail extends Command
 
             // Enviar email
             $asunto = 'Prueba - Factura #' . $factura->getNumeroFormateado() . ' - SowarTech';
-            $mensaje = "Esta es una prueba del sistema de envío de facturas.\n\nFactura #{$factura->getNumeroFormateado()} por $" . number_format($factura->total, 2) . ".\n\nSaludos cordiales,\nEquipo de SowarTech";
+            $mensaje = "Esta es una prueba del sistema de envío de facturas.\n\nFactura #{$factura->getNumeroFormateado()} por $" . number_format((float)
+$factura->total, 2) . ".\n\nSaludos cordiales,\nEquipo de SowarTech";
 
             $this->info("Enviando email...");
             

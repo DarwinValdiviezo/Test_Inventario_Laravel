@@ -5,7 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Services\FacturaSRIService;
+use App\Models\FacturaDetalle;
 
+/**
+ * @property \App\Models\Cliente $cliente
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $detalles
+ * @property \App\Models\User $usuario
+ */
 class Factura extends Model
 {
     use SoftDeletes;
@@ -52,6 +58,9 @@ class Factura extends Model
         'fecha_emision_email' => 'datetime'
     ];
 
+    /**
+     * Relación con el cliente
+     */
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
@@ -77,11 +86,17 @@ class Factura extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
+    /**
+     * Relación con los detalles
+     */
     public function detalles()
     {
         return $this->hasMany(FacturaDetalle::class);
     }
 
+    /**
+     * Relación con el usuario
+     */
     public function usuario()
     {
         return $this->belongsTo(User::class, 'usuario_id');
@@ -257,7 +272,7 @@ class Factura extends Model
             
             if ($clienteEmail) {
                 $asunto = 'Factura #' . $this->getNumeroFormateado() . ' - SowarTech';
-                $mensaje = "Adjunto la factura #{$this->getNumeroFormateado()} por un total de $" . number_format($this->total, 2) . ".\n\nGracias por su compra.\n\nSaludos cordiales,\nEquipo de SowarTech";
+                $mensaje = "Adjunto la factura #{$this->getNumeroFormateado()} por un total de $" . number_format((float)$this->total, 2) . ".\n\nGracias por su compra.\n\nSaludos cordiales,\nEquipo de SowarTech";
                 
                 $enviado = $emailService->enviarFactura($this, $clienteEmail, $asunto, $mensaje);
                 

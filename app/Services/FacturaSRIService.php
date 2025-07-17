@@ -98,7 +98,7 @@ class FacturaSRIService
             'ptoEmi' => '001',
             'secuencial' => $factura->numero_secuencial,
             'fechaEmision' => $factura->fecha_emision,
-            'total' => number_format($factura->total, 2, '.', ''),
+            'total' => number_format((float)$factura->total, 2, '.', ''),
             'tipoPago' => $factura->forma_pago,
             'ambiente' => 'PROD',
             'cua' => $factura->cua,

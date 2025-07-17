@@ -82,7 +82,8 @@ class CreateTestFactura extends Command
             $this->info("✅ Factura de prueba creada con ID: {$factura->id}");
             $this->info("Cliente: {$cliente->nombre}");
             $this->info("Producto: {$producto->nombre}");
-            $this->info("Total: $" . number_format($factura->total, 2));
+            $this->info("Total: $" . number_format((float)
+$factura->total, 2));
 
             return 0;
 

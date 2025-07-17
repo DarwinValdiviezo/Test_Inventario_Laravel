@@ -92,6 +92,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->trashed();
     }
+
+    /**
+     * @property \App\Models\Cliente $cliente
+     */
 }
 
 class Role extends SpatieRole
