@@ -1,0 +1,191 @@
+<!-- Modal Anular Factura -->
+<div class="modal fade" id="modalAnularFactura" tabindex="-1" aria-labelledby="modalAnularFacturaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-danger text-white">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                    <h5 class="modal-title mb-0" id="modalAnularFacturaLabel">
+                        <strong>Anular Factura Electrónica</strong>
+                    </h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form method="POST" action="{{ route('facturas.destroy', $factura) }}" id="formAnularFactura">
+                @csrf
+                @method('DELETE')
+                
+                <div class="modal-body">
+                    <!-- Alerta de advertencia -->
+                    <div class="alert alert-danger border-0 mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                            <div>
+                                <h6 class="alert-heading mb-1">¡Acción Irreversible!</h6>
+                                <p class="mb-0">Esta acción anulará permanentemente la factura electrónica y no se puede deshacer.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la factura -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning bg-opacity-10">
+                                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Información de la Factura</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Número:</small>
+                                            <div class="fw-bold">{{ $factura->getNumeroFormateado() }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Total:</small>
+                                            <div class="fw-bold text-success">${{ number_format($factura->total, 2) }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <small class="text-muted">Cliente:</small>
+                                            <div class="fw-bold">{{ $factura->cliente->nombre ?? 'Cliente eliminado' }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Fecha:</small>
+                                            <div class="fw-bold">{{ $factura->created_at->format('d/m/Y') }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger bg-opacity-10">
+                                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Consecuencias de la Anulación</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2"><i class="bi bi-arrow-right text-danger me-2"></i>Stock revertido automáticamente</li>
+                                        <li class="mb-2"><i class="bi bi-arrow-right text-danger me-2"></i>Factura inválida para contabilidad</li>
+                                        <li class="mb-2"><i class="bi bi-arrow-right text-danger me-2"></i>Notificación enviada al SRI</li>
+                                        <li><i class="bi bi-arrow-right text-danger me-2"></i>Registro en auditoría</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos requeridos -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="passwordAnular" class="form-label">
+                                    <i class="bi bi-lock me-1"></i>Contraseña de Confirmación
+                                </label>
+                                <input type="password" class="form-control" id="passwordAnular" name="password" 
+                                       placeholder="Ingresa tu contraseña" required>
+                                <div class="form-text">Ingresa tu contraseña para confirmar la anulación</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="observacionAnular" class="form-label">
+                                    <i class="bi bi-chat-text me-1"></i>Motivo de Anulación
+                                </label>
+                                <select class="form-select" id="observacionAnular" name="observacion" required>
+                                    <option value="">Selecciona un motivo</option>
+                                    <option value="Error en datos del cliente">Error en datos del cliente</option>
+                                    <option value="Error en productos o cantidades">Error en productos o cantidades</option>
+                                    <option value="Error en precios o descuentos">Error en precios o descuentos</option>
+                                    <option value="Solicitud del cliente">Solicitud del cliente</option>
+                                    <option value="Problema técnico">Problema técnico</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div class="form-text">Selecciona el motivo de la anulación</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campo adicional para "Otro" -->
+                    <div class="mb-3" id="otroMotivoDiv" style="display: none;">
+                        <label for="observacionOtro" class="form-label">
+                            <i class="bi bi-pencil me-1"></i>Especificar Otro Motivo
+                        </label>
+                        <textarea class="form-control" id="observacionOtro" name="observacion_otro" 
+                                  rows="3" placeholder="Describe el motivo específico de la anulación..."></textarea>
+                    </div>
+
+                    <!-- Confirmación final -->
+                    <div class="alert alert-warning border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-exclamation me-3"></i>
+                            <div>
+                                <strong>Confirmación Final:</strong>
+                                <p class="mb-0 mt-1">Al hacer clic en "Anular Factura", confirmas que entiendes las consecuencias y que esta acción no se puede deshacer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger" id="btnAnularFactura">
+                        <i class="bi bi-exclamation-triangle me-1"></i> 
+                        <span id="btnText">Anular Factura</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para el modal de anulación -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const observacionSelect = document.getElementById('observacionAnular');
+    const otroMotivoDiv = document.getElementById('otroMotivoDiv');
+    const observacionOtro = document.getElementById('observacionOtro');
+    const formAnular = document.getElementById('formAnularFactura');
+    const btnAnular = document.getElementById('btnAnularFactura');
+    const btnText = document.getElementById('btnText');
+
+    // Mostrar/ocultar campo "Otro motivo"
+    observacionSelect.addEventListener('change', function() {
+        if (this.value === 'Otro') {
+            otroMotivoDiv.style.display = 'block';
+            observacionOtro.required = true;
+        } else {
+            otroMotivoDiv.style.display = 'none';
+            observacionOtro.required = false;
+        }
+    });
+
+    // Confirmación antes de enviar
+    formAnular.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('passwordAnular').value;
+        const observacion = observacionSelect.value;
+        
+        if (!password || !observacion) {
+            alert('Por favor completa todos los campos requeridos.');
+            return;
+        }
+        
+        if (observacion === 'Otro' && !observacionOtro.value.trim()) {
+            alert('Por favor especifica el motivo de anulación.');
+            return;
+        }
+        
+        // Confirmación final
+        if (confirm('¿Estás completamente seguro de que deseas anular esta factura? Esta acción no se puede deshacer.')) {
+            btnAnular.disabled = true;
+            btnText.textContent = 'Anulando...';
+            this.submit();
+        }
+    });
+});
+</script> 

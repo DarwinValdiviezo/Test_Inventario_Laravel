@@ -1,0 +1,1 @@
+// Si este archivo no existe, copiar el contenido de resources/js/productos.js aquí para que la app lo cargue correctamente. 
