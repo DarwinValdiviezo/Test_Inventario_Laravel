@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Cliente;
 use App\Models\User;
-
+//arreglar  Relation 'cliente' is not found in App\Models\Factura model en la linea 100
+//arreglar  Relation 'cliente' is not found in App\Models\Factura model en la linea 100     
 /**
- * @property \App\Models\User $user
+ * @property \App\Models\User|null $user
  */
 class Auditoria extends Model
 {

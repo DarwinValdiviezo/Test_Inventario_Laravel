@@ -16,6 +16,11 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $detalles
+ * @property \App\Models\Cliente|null $cliente
+ * @property \App\Models\User|null $user
+ */
 class FacturasController extends Controller
 {
     use AuthorizesRequests;

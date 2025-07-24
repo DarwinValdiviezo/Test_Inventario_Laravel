@@ -147,4 +147,13 @@ class DashboardController extends Controller
         // Si no tiene rol válido
         abort(403, 'Rol no autorizado');
     }
+
+    public function createToken(Request $request)
+    {
+        $request->validate([
+            'token_name' => 'required|string|max:255',
+        ]);
+        $token = $request->user()->createToken($request->token_name)->plainTextToken;
+        return redirect()->route('dashboard')->with('token', $token);
+    }
 }

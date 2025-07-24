@@ -5,6 +5,9 @@ use App\Models\Producto;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+/**
+ * @property \App\Models\Categoria|null $categoria
+ */
 class ProductosExport implements FromCollection, WithHeadings
 {
     public function collection()

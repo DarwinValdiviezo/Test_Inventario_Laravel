@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use App\Services\EmailService;
 use App\Models\Factura;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $detalles
+ */
 class TestEmail extends Command
 {
     /**

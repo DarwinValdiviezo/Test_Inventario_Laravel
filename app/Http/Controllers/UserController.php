@@ -11,6 +11,10 @@ use Illuminate\Support\Carbon;
 use App\Models\Cliente;
 use Spatie\Permission\Models\Role;
 
+/**
+ * @property \App\Models\Cliente|null $cliente
+ * @property string|null $password
+ */
 class UserController extends Controller
 {
     public function index(Request $request)
@@ -483,4 +487,97 @@ class UserController extends Controller
         $user->save();
         return redirect()->route('dashboard')->with('success', 'Eliminación de cuenta cancelada.');
     }
+
+    /**
+     * Devuelve todos los usuarios en formato JSON para la API.
+     */
+    public function apiIndex(Request $request)
+    {
+        // Solo permitir a administradores
+        if (!$request->user() || !$request->user()->hasRole('Administrador')) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+        $users = \App\Models\User::with('roles')->get();
+        return response()->json($users);
+    }
+
+    /**
+     * Devuelve todos los usuarios en formato JSON (findAll para API).
+     */
+    public function findAll()
+    {
+        $users = \App\Models\User::with('roles')->get();
+        return response()->json($users);
+    }
+
+    /**
+     * Crear un token de acceso personal para un usuario específico (solo admin).
+     */
+    public function crearTokenAcceso(Request $request)
+    {
+        $request->validate([
+            'usuario_id' => 'required|exists:users,id',
+            'token_name' => 'required|string|max:255',
+        ]);
+        $user = User::findOrFail($request->usuario_id);
+        $token = $user->createToken($request->token_name)->plainTextToken;
+        // Registrar en auditoría
+        if (class_exists('App\\Models\\Auditoria')) {
+            \App\Models\Auditoria::create([
+                'user_id' => auth()->id(),
+                'action' => 'crear_token',
+                'model_type' => User::class,
+                'model_id' => $user->id,
+                'description' => 'Se generó un token para el usuario ' . $user->name . ' (' . $user->email . ')',
+                'observacion' => 'Nombre del token: ' . $request->token_name,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+            ]);
+        }
+        return redirect()->route('dashboard', ['usuario_id' => $user->id])
+            ->with('token', $token)
+            ->with('token_name', $request->token_name);
+    }
+
+    /**
+     * Guarda el plainTextToken en la tabla user_visible_tokens.
+     */
+    public function guardarVisibleToken(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'token' => 'required|string',
+        ]);
+        \App\Models\UserVisibleToken::create([
+            'user_id' => $request->user_id,
+            'name' => $request->name,
+            'token' => $request->token,
+        ]);
+        return redirect()->route('dashboard', ['usuario_id' => $request->user_id])->with('success', 'Token guardado correctamente.');
+    }
+
+    /**
+     * Regenera un token: elimina el anterior, crea uno nuevo, guarda el plainTextToken y lo retorna.
+     */
+    public function regenerateToken(Request $request)
+    {
+        $request->validate([
+            'token_id' => 'required|exists:personal_access_tokens,id',
+        ]);
+        $token = \Laravel\Sanctum\PersonalAccessToken::findOrFail($request->token_id);
+        $user = $token->tokenable;
+        $name = $token->name;
+        $token->delete();
+        $newToken = $user->createToken($name);
+        // Guardar en user_visible_tokens
+        \App\Models\UserVisibleToken::create([
+            'user_id' => $user->id,
+            'name' => $name,
+            'token' => $newToken->plainTextToken,
+        ]);
+        return response()->json(['token' => $newToken->plainTextToken]);
+    }
+
+
 }

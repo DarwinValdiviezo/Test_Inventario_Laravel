@@ -9,7 +9,10 @@ use App\Models\FacturaDetalle;
 use App\Models\User;
 
 /**
- * @property \App\Models\Categoria $categoria
+ * @property \App\Models\Categoria|null $categoria
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $facturaDetalles
+ * @property \App\Models\User|null $creador
+ * @property \App\Models\User|null $modificador
  */
 class Producto extends Model
 {

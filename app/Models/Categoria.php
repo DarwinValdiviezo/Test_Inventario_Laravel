@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int|null $productos_count
+ */
 class Categoria extends Model
 {
     use SoftDeletes;

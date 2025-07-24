@@ -132,6 +132,12 @@ class RolesController extends Controller
         }
     }
 
+    // Método dummy para evitar error PHPStan
+    public function authorize($ability = null, $arguments = [])
+    {
+        // Implementar lógica de autorización si es necesario
+    }
+
     private function registrarAuditoria($accion, $modelo, $old, $new, $descripcion, $observacion = null)
     {
         try {

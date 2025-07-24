@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Factura;
 use App\Models\User;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Factura[] $facturas
+ */
 class Cliente extends Model
 {
     use SoftDeletes;

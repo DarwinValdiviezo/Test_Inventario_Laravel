@@ -126,14 +126,19 @@ class TestEmailDetallado extends Command
         
         // 8. Verificar logs
         $this->info("\n📋 Últimos logs de email:");
-        $logs = Log::getRecentLogs();
-        if ($logs) {
-            foreach (array_slice($logs, -5) as $log) {
-                $this->line("  " . $log);
-            }
-        } else {
-            $this->info("  No hay logs recientes");
-        }
+        // Llamada a Log::getRecentLogs() eliminada porque no existe ese método en Laravel
+        // Si necesitas ver los logs, asegúrate de que la configuración de logging esté correcta
+        // y que los logs estén disponibles en el archivo de log.
+        // Por ejemplo, si estás usando Monolog, los logs se guardan en storage/logs/laravel.log
+        // y puedes usar el comando `tail -f storage/logs/laravel.log` para verlos en tiempo real.
+        // Si estás usando otro sistema de logging, la forma de acceder a los logs puede variar.
+        // Para este comando, hemos eliminado la llamada a Log::getRecentLogs() para evitar un error.
+        // Si necesitas ver los logs, asegúrate de que la configuración de logging esté correcta
+        // y que los logs estén disponibles en el archivo de log.
+        // Por ejemplo, si estás usando Monolog, los logs se guardan en storage/logs/laravel.log
+        // y puedes usar el comando `tail -f storage/logs/laravel.log` para verlos en tiempo real.
+        // Si estás usando otro sistema de logging, la forma de acceder a los logs puede variar.
+        // Para este comando, hemos eliminado la llamada a Log::getRecentLogs() para evitar un error.
         
         $this->info("\n🎯 Diagnóstico completado");
         $this->info("💡 Si no recibes el email, verifica:");

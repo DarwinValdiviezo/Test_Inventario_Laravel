@@ -8,9 +8,16 @@ use App\Services\FacturaSRIService;
 use App\Models\FacturaDetalle;
 
 /**
- * @property \App\Models\Cliente $cliente
+ * @property \App\Models\Cliente|null $cliente
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $detalles
- * @property \App\Models\User $usuario
+ * @property \App\Models\User|null $usuario
+ * @property \App\Models\User|null $creador
+ * @property \App\Models\User|null $actualizador
+ * @property string|null $mes
+ * @property int|null $cantidad
+ * @property float|null $total_ventas
+ * @property float|string $subtotal
+ * @property string $estado // Puede ser 'activa', 'anulada', 'EMITIDA'
  */
 class Factura extends Model
 {

@@ -8,8 +8,8 @@ use App\Models\Factura;
 use App\Models\Producto;
 
 /**
- * @property \App\Models\Factura $factura
- * @property \App\Models\Producto $producto
+ * @property \App\Models\Factura|null $factura
+ * @property \App\Models\Producto|null $producto
  */
 class FacturaDetalle extends Model
 {

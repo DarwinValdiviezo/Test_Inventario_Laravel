@@ -10,12 +10,16 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Laravel\Sanctum\HasApiTokens;
     
+/**
+ * @property \App\Models\Cliente|null $cliente
+ * @property string|null $password
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -94,7 +98,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @property \App\Models\Cliente $cliente
+     * @property \App\Models\Cliente|null $cliente
      */
 }
 

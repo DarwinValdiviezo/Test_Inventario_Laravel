@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Factura;
 
+/**
+ * @property \App\Models\Cliente|null $cliente
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FacturaDetalle[] $detalles
+ */
 class RegenerarQRyFirmaFacturas extends Command
 {
     protected $signature = 'facturas:regenerar-qr-firma';

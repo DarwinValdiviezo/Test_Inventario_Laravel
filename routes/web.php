@@ -10,6 +10,7 @@ use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FacturaEstadoController;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,7 +40,21 @@ Route::get('/', function () {
 //     return response()->json(['status' => 'ok']);
 // })->middleware('auth');
 
+
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'check.user.status'])->name('dashboard');
+Route::post('/dashboard/token', [DashboardController::class, 'createToken'])->middleware(['auth', 'verified', 'check.user.status'])->name('dashboard.token');
+Route::post('/dashboard/guardar-token', [UserController::class, 'guardarVisibleToken'])->middleware(['auth', 'verified', 'check.user.status'])->name('dashboard.guardarToken');
+
+Route::post('/tokens/create', function (Request $request) {
+    $request->validate([
+        'token_name' => 'required|string|max:255',
+    ]);
+    $token = $request->user()->createToken($request->token_name);
+    return ['token' => $token->plainTextToken];
+})->middleware(['auth', 'verified', 'check.user.status'])->name('tokens.create');
+
+Route::post('/tokens/regenerate', [UserController::class, 'regenerateToken'])->middleware(['auth', 'verified', 'check.user.status'])->name('tokens.regenerate');
 
 Route::middleware(['auth', 'verified', 'check.user.status'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -124,7 +139,7 @@ Route::middleware(['auth', 'verified', 'check.user.status'])->group(function () 
     });
 
     // Rutas de Usuarios: Solo Administrador
-    Route::middleware('role:Administrador')->group(function () {
+    Route::middleware(['auth', 'verified', 'check.user.status', 'role:Administrador'])->group(function () {
         Route::resource('users', UserController::class);
         Route::post('/users/{user}/toggle-estado', [UserController::class, 'toggleEstado'])->name('users.toggleEstado');
         Route::post('/users/{user}/activar', [UserController::class, 'activarUsuario'])->name('users.activar');
@@ -132,6 +147,7 @@ Route::middleware(['auth', 'verified', 'check.user.status'])->group(function () 
         Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
         Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
         Route::post('/users/cancelar-borrado', [UserController::class, 'cancelarBorradoCuenta'])->name('users.cancelarBorradoCuenta');
+        Route::post('/users/crear-token', [UserController::class, 'crearTokenAcceso'])->name('users.crearToken');
     });
 });
 
