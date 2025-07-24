@@ -12,6 +12,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductosExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductosController extends Controller
 {
@@ -93,21 +95,21 @@ class ProductosController extends Controller
         try {
             $data = $request->validated();
             $data['created_by'] = auth()->id();
-            // Log para depuración
-            \Log::info('¿Archivo recibido en store?', ['hasFile' => $request->hasFile('imagen')]);
             if ($request->hasFile('imagen')) {
-                \Log::info('Info del archivo en store', [
-                    'originalName' => $request->file('imagen')->getClientOriginalName(),
-                    'mime' => $request->file('imagen')->getMimeType(),
-                    'size' => $request->file('imagen')->getSize(),
-                ]);
                 $file = $request->file('imagen');
                 $filename = uniqid('prod_') . '.' . $file->getClientOriginalExtension();
-                \Log::info('Ruta absoluta donde se guardará la imagen (store)', [
-                    'path' => storage_path('app/public/productos/' . $filename)
-                ]);
-                $file->move(storage_path('app/public/productos'), $filename);
-                \Log::info('Imagen guardada en store', ['filename' => $filename]);
+                // Guardar en public/storage/productos/
+                $publicPath = public_path('storage/productos');
+                if (!file_exists($publicPath)) {
+                    mkdir($publicPath, 0777, true);
+                }
+                $file->move($publicPath, $filename);
+                // (Opcional) Copiar también a storage/app/public/productos/ para respaldo
+                $backupPath = storage_path('app/public/productos');
+                if (!file_exists($backupPath)) {
+                    mkdir($backupPath, 0777, true);
+                }
+                copy($publicPath . '/' . $filename, $backupPath . '/' . $filename);
                 $data['imagen'] = $filename;
             }
             $producto = Producto::create($data);
@@ -174,13 +176,29 @@ class ProductosController extends Controller
             // Imagen
             if ($request->hasFile('imagen')) {
                 $hasChanges = true;
-                // Borrar imagen anterior si existe
-                if ($producto->imagen && \Storage::exists('public/productos/' . $producto->imagen)) {
-                    \Storage::delete('public/productos/' . $producto->imagen);
+                // Borrar imagen anterior si existe en ambas ubicaciones
+                $publicPath = public_path('storage/productos');
+                $backupPath = storage_path('app/public/productos');
+                if ($producto->imagen) {
+                    $publicFile = $publicPath . '/' . $producto->imagen;
+                    $backupFile = $backupPath . '/' . $producto->imagen;
+                    if (file_exists($publicFile)) {
+                        unlink($publicFile);
+                    }
+                    if (file_exists($backupFile)) {
+                        unlink($backupFile);
+                    }
                 }
                 $file = $request->file('imagen');
                 $filename = uniqid('prod_') . '.' . $file->getClientOriginalExtension();
-                $file->move(storage_path('app/public/productos'), $filename);
+                if (!file_exists($publicPath)) {
+                    mkdir($publicPath, 0777, true);
+                }
+                $file->move($publicPath, $filename);
+                if (!file_exists($backupPath)) {
+                    mkdir($backupPath, 0777, true);
+                }
+                copy($publicPath . '/' . $filename, $backupPath . '/' . $filename);
                 $data['imagen'] = $filename;
             } else {
                 unset($data['imagen']);
@@ -387,8 +405,17 @@ class ProductosController extends Controller
                 return redirect()->back()->with('error', $msg);
             }
             $old = $producto->toArray();
-            if ($producto->imagen && \Storage::exists('public/productos/' . $producto->imagen)) {
-                \Storage::delete('public/productos/' . $producto->imagen);
+            if ($producto->imagen) {
+                $publicPath = public_path('storage/productos');
+                $backupPath = storage_path('app/public/productos');
+                $publicFile = $publicPath . '/' . $producto->imagen;
+                $backupFile = $backupPath . '/' . $producto->imagen;
+                if (file_exists($publicFile)) {
+                    unlink($publicFile);
+                }
+                if (file_exists($backupFile)) {
+                    unlink($backupFile);
+                }
             }
             $producto->forceDelete();
             $this->registrarAuditoria('forceDelete', $producto, $old, null, 'Producto eliminado permanentemente', $request->observacion);

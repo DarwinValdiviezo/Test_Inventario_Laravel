@@ -46,7 +46,7 @@ class ClientesController extends Controller
             }
             
             if ($request->filled('log_usuario')) {
-                $logs = $logs->whereHas('user', function($q) {
+                $logs = $logs->whereHas('user', function($q) use ($request) {
                     $q->where('id', $request->input('log_usuario'));
                 });
             }
@@ -399,12 +399,7 @@ class ClientesController extends Controller
             
             \Log::info('Intentando eliminar cliente:', ['cliente_id' => $cliente->id, 'nombre' => $cliente->nombre]);
             
-            // Verificar si el modelo tiene SoftDeletes
-            if (!method_exists($cliente, 'delete')) {
-                throw new \Exception('El modelo no tiene método delete');
-            }
-            
-            // Intentar el soft delete
+            // Intentar el soft delete directamente, ya que Cliente siempre es un modelo Eloquent
             $result = $cliente->delete();
             
             \Log::info('Resultado del delete:', ['result' => $result, 'cliente_id' => $cliente->id]);

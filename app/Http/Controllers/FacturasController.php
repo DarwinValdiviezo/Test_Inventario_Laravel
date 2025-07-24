@@ -59,7 +59,7 @@ class FacturasController extends Controller
             }
             
             if ($request->filled('log_usuario')) {
-                $logs = $logs->whereHas('user', function($q) {
+                $logs = $logs->whereHas('user', function($q) use ($request) {
                     $q->where('id', $request->input('log_usuario'));
                 });
             }
