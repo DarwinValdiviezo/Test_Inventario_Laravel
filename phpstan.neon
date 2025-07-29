@@ -9,6 +9,7 @@ parameters:
     level: 5
     excludePaths:
         - app/Console/Commands/*.php
+        - resources/lang/**/*.php
     ignoreErrors:
         # Errores temporales que se irán corrigiendo gradualmente
         - '#Call to an undefined method#'

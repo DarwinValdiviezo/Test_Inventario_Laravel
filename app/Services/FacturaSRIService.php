@@ -110,9 +110,9 @@ class FacturaSRIService
             'productos' => $factura->detalles->map(function($detalle) {
                 return [
                     'nombre' => $detalle->producto->nombre ?? '',
-                    'cantidad' => $detalle->cantidad,
-                    'precio' => $detalle->precio_unitario,
-                    'subtotal' => $detalle->subtotal
+                    'cantidad' => (int) $detalle->cantidad,
+                    'precio' => (float) $detalle->precio_unitario,
+                    'subtotal' => (float) $detalle->subtotal
                 ];
             })->toArray()
         ];

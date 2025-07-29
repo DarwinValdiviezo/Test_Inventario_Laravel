@@ -233,9 +233,9 @@ class FacturaApiController extends Controller
                 'detalles' => $factura->detalles->map(function ($detalle) {
                     return [
                         'id' => $detalle->id,
-                        'cantidad' => $detalle->cantidad,
-                        'precio_unitario' => $detalle->precio_unitario,
-                        'subtotal' => $detalle->subtotal,
+                        'cantidad' => (int) $detalle->cantidad,
+                        'precio_unitario' => (float) $detalle->precio_unitario,
+                        'subtotal' => (float) $detalle->subtotal,
                         'producto' => $detalle->producto ? [
                             'id' => $detalle->producto->id,
                             'nombre' => $detalle->producto->nombre,
@@ -243,7 +243,7 @@ class FacturaApiController extends Controller
                             'imagen_url' => $detalle->producto->imagen ? asset('storage/productos/' . $detalle->producto->imagen) : null
                         ] : null
                     ];
-                }),
+                })->toArray(),
                 'created_at' => $factura->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $factura->updated_at->format('Y-m-d H:i:s')
             ];
@@ -640,7 +640,7 @@ class FacturaApiController extends Controller
                     'created_at' => $factura->created_at->format('Y-m-d H:i:s'),
                     'detalles' => $factura->detalles->map(function ($detalle) {
                         return [
-                            'producto' => $detalle->producto ? $detalle->producto->nombre : null,
+                            'producto' => $detalle->producto ? (string) $detalle->producto->nombre : null,
                             'cantidad' => (int) $detalle->cantidad,
                             'precio_unitario' => (float) $detalle->precio_unitario,
                             'subtotal' => (float) $detalle->subtotal,
