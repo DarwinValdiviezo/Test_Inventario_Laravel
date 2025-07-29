@@ -268,10 +268,6 @@ Esta documentación registra de manera sistemática todos los errores detectados
 
 Esta guía nace de la necesidad de mantener un código limpio y bien documentado. Durante el desarrollo, PHPStan/Larastan detectó varios errores que, aunque no afectaban la funcionalidad, indicaban áreas de mejora en la calidad del código. Cada corrección se documenta aquí para que futuros desarrolladores entiendan el razonamiento detrás de los cambios.
 
-### Contexto del proyecto
-
-Como estudiante desarrollando este sistema de inventario, me encontré con múltiples desafíos relacionados con la calidad del código. PHPStan/Larastan se convirtió en una herramienta invaluable para identificar problemas que, aunque no causaban errores en tiempo de ejecución, podían generar problemas de mantenibilidad a largo plazo. Esta documentación refleja mi aprendizaje y las decisiones técnicas que tomé durante el desarrollo.
-
 ## Estructura de la documentación
 
 Cada sección sigue un patrón consistente:
@@ -854,10 +850,4 @@ Esta documentación representa un esfuerzo sistemático por mejorar la calidad d
 
 La clave del éxito ha sido entender que PHPStan/Larastan no es solo una herramienta de detección de errores, sino una aliada en el desarrollo de software de calidad. Al trabajar con estas herramientas en lugar de contra ellas, hemos logrado un código más limpio, mejor documentado y más fácil de mantener.
 
-El proceso de corrección de estos errores ha sido educativo y ha mejorado significativamente la comprensión del equipo sobre las mejores prácticas de desarrollo en Laravel y el uso efectivo de herramientas de análisis estático.
-
-### Impacto del Trabajo Realizado
-
-Como estudiante desarrollando este proyecto, el proceso de corrección de errores PHPStan/Larastan ha sido una experiencia de aprendizaje invaluable. He aprendido que la calidad del código no es solo una cuestión de funcionalidad, sino de mantenibilidad, legibilidad y robustez a largo plazo.
-
-Los 77 errores iniciales se han reducido a solo 2, representando una mejora del 97.4% en la calidad del análisis estático. Este progreso no solo mejora el código actual, sino que establece estándares de calidad para futuros desarrollos. 
+El proceso de corrección de estos errores ha sido educativo y ha mejorado significativamente la comprensión del equipo sobre las mejores prácticas de desarrollo en Laravel y el uso efectivo de herramientas de análisis estático. 
