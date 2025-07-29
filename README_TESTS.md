@@ -232,7 +232,7 @@ Esta documentación registra de manera sistemática todos los errores detectados
 
 ## Propósito de esta documentación
 
-Esta guía nace de la necesidad de mantener un código limpio y bien documentado. Durante el desarrollo, PHPStan/Larastan detectó varios errores que, aunque no afectaban la funcionalidad, indicaban áreas de mejora en la calidad del código. Cada corrección se documenta aquí para que futuros desarrolladores entiendan el razonamiento detrás de los cambios.
+Documentar errores durante el desarrollo, PHPStan/Larastan detectó varios errores que, aunque no afectaban la funcionalidad, indicaban áreas de mejora en la calidad del código. Cada corrección se documenta aquí para que futuros desarrolladores entiendan el razonamiento detrás de los cambios.
 
 ## Estructura de la documentación
 
