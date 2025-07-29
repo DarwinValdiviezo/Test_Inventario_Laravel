@@ -115,7 +115,8 @@ class DashboardController extends Controller
             $comprasCliente = $cliente ? $cliente->facturas()->count() : 0;
             $facturasCliente = $cliente ? $cliente->facturas()->count() : 0;
             $totalGastado = $cliente ? $cliente->facturas()->sum('total') : 0;
-            return view('dashboard_cliente', compact('comprasCliente', 'facturasCliente', 'totalGastado'));
+            $facturasRecientes = $cliente ? $cliente->facturas()->orderBy('created_at', 'desc')->limit(10)->get() : collect();
+            return view('dashboard_cliente', compact('comprasCliente', 'facturasCliente', 'totalGastado', 'facturasRecientes'));
         }
 
         // SECRETARIO

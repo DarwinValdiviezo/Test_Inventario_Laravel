@@ -10,6 +10,71 @@
           <p class="text-muted mb-3">Este es tu panel de cliente. Aquí podrás ver tus compras, facturas y novedades.</p>
         </div>
       </div>
+      <!-- Generar y copiar token API -->
+      <div class="card shadow-sm border-0 rounded-3 text-center p-4 mb-4 animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-2">Token de API personal</h5>
+        <form id="form-token" method="POST" action="{{ route('cliente.generar_token') }}">
+          @csrf
+          <input type="hidden" name="token_name" value="Token Cliente">
+          <button type="submit" class="btn btn-primary">Generar Token API</button>
+        </form>
+        @if(session('token'))
+          <div class="alert alert-success mt-3">
+            <strong>Token generado:</strong>
+            <input type="text" id="api-token" class="form-control" value="{{ session('token') }}" readonly>
+            <button class="btn btn-secondary mt-2" onclick="copiarToken()">Copiar Token</button>
+          </div>
+          <script>
+            function copiarToken() {
+              var copyText = document.getElementById("api-token");
+              copyText.select();
+              copyText.setSelectionRange(0, 99999);
+              document.execCommand("copy");
+              alert("¡Token copiado!");
+            }
+          </script>
+        @endif
+      </div>
+      <!-- Tabla de facturas recientes del cliente -->
+      <div class="card shadow-sm border-0 rounded-3 p-4 mb-4 animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-3">Tus últimas facturas</h5>
+        @if($facturasRecientes->count())
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Fecha</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($facturasRecientes as $factura)
+                  <tr>
+                    <td>{{ $factura->getNumeroFormateado() }}</td>
+                    <td>{{ $factura->created_at->format('Y-m-d H:i') }}</td>
+                    <td>$ {{ number_format($factura->total, 2) }}</td>
+                    <td>
+                      <span class="badge bg-{{ $factura->estado === 'activa' ? 'success' : 'secondary' }}">
+                        {{ ucfirst($factura->estado) }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{{ route('facturas.show', $factura->id) }}" class="btn btn-sm btn-outline-primary" title="Ver detalle">
+                        <i class="bx bx-search"></i> Ver
+                      </a>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        @else
+          <div class="alert alert-info mb-0">No tienes facturas registradas aún.</div>
+        @endif
+      </div>
       <div class="row g-3 mb-4">
         <div class="col-md-4">
           <div class="card shadow-sm border-0 rounded-3 text-center p-4 animate__animated animate__fadeInLeft">

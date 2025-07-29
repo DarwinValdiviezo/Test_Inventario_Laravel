@@ -612,6 +612,16 @@ class ClientesController extends Controller
         }
     }
 
+    /**
+     * Generar un token de API para el cliente autenticado
+     */
+    public function generarToken(Request $request)
+    {
+        $user = auth()->user();
+        $token = $user->createToken($request->token_name ?? 'Token Cliente')->plainTextToken;
+        return redirect()->back()->with('token', $token);
+    }
+
     private function registrarAuditoria($accion, $modelo, $old, $new, $descripcion, $observacion = null)
     {
         try {

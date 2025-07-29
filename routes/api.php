@@ -46,9 +46,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('productos/reporte', [ProductoApiController::class, 'reporte']);
     });
 
-    // Facturas (admin y ventas)
+    // Facturas del cliente autenticado (rol cliente)
+    Route::middleware('role:cliente')->group(function () {
+        Route::get('/facturas/mis-facturas', [FacturaApiController::class, 'misFacturas']);
+    });
+
+    // Rutas personalizadas de facturas (solo admin/ventas)
     Route::middleware('role:Administrador|Ventas')->group(function () {
-        Route::apiResource('facturas', FacturaApiController::class);
         Route::get('/facturas/{factura}/pdf', [FacturaApiController::class, 'downloadPDF']);
         Route::post('/facturas/{factura}/send-email', [FacturaApiController::class, 'sendEmail']);
         Route::post('/facturas/{factura}/firmar', [FacturaApiController::class, 'firmar']);
@@ -58,6 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/facturas/{factura}/estado', [FacturaApiController::class, 'estado']);
         Route::get('/facturas/estadisticas', [FacturaApiController::class, 'estadisticas']);
     });
+
+    // apiResource de facturas solo bajo auth:sanctum
+    Route::apiResource('facturas', FacturaApiController::class);
 
     // Auditoría (solo admin)
     Route::middleware('role:Administrador')->group(function () {

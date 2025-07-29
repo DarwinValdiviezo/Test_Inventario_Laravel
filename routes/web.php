@@ -56,6 +56,8 @@ Route::post('/tokens/create', function (Request $request) {
 
 Route::post('/tokens/regenerate', [UserController::class, 'regenerateToken'])->middleware(['auth', 'verified', 'check.user.status'])->name('tokens.regenerate');
 
+Route::post('/cliente/generar-token', [App\Http\Controllers\ClientesController::class, 'generarToken'])->name('cliente.generar_token');
+
 Route::middleware(['auth', 'verified', 'check.user.status'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

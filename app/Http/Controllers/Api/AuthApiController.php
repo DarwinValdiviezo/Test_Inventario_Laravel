@@ -57,7 +57,7 @@ class AuthApiController extends Controller
             }
 
             // Verificar que el usuario tenga roles válidos para la API
-            $rolesPermitidos = ['Administrador', 'Bodega', 'Ventas', 'Secretario'];
+            $rolesPermitidos = ['Administrador', 'Bodega', 'Ventas', 'Secretario', 'cliente'];
             if (!$user->hasAnyRole($rolesPermitidos)) {
                 return response()->json([
                     'success' => false,
