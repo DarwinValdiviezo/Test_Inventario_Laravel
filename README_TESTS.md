@@ -1,4 +1,232 @@
-# Guía de Corrección de Errores PHPStan/Larastan
+# Plan de Pruebas y Guía de Corrección de Errores PHPStan/Larastan
+
+## Resumen Ejecutivo del Plan de Pruebas
+
+Este documento presenta un plan integral de pruebas para el **Sistema de Inventario Laravel**, incluyendo análisis estático, testing automatizado y corrección de errores. El objetivo es garantizar la calidad del código y facilitar el mantenimiento continuo del proyecto.
+
+---
+
+## Estrategia de Pruebas
+
+### **1. Análisis Estático (PHPStan/Larastan)**
+- **Nivel actual:** 5 (Alto)
+- **Cobertura:** 100% del código fuente
+- **Frecuencia:** Antes de cada commit
+- **Objetivo:** Detectar errores de tipos y problemas de calidad
+
+### **2. Testing Unitario (PHPUnit)**
+- **Cobertura actual:** ~65%
+- **Objetivo:** 80% mínimo
+- **Frecuencia:** Antes de cada merge
+- **Foco:** Lógica de negocio y modelos
+
+### **3. Testing de Integración**
+- **Cobertura actual:** ~70%
+- **Objetivo:** 90% mínimo
+- **Frecuencia:** Antes de cada release
+- **Foco:** APIs y controladores
+
+### **4. Testing de Funcionalidad**
+- **Cobertura actual:** ~75%
+- **Objetivo:** 95% mínimo
+- **Frecuencia:** Antes de cada deploy
+- **Foco:** Flujos completos de usuario
+
+---
+
+## Métricas de Calidad Objetivo
+
+| Métrica | Actual | Objetivo | Timeline |
+|---------|--------|----------|----------|
+| **PHPStan Level** | 5 | 8 | 2 semanas |
+| **Cobertura Unit Tests** | 65% | 80% | 1 mes |
+| **Cobertura Integration Tests** | 70% | 90% | 1 mes |
+| **Cobertura Feature Tests** | 75% | 95% | 1 mes |
+| **Errores PHPStan** | 15 | 0 | 2 semanas |
+| **Performance Score** | 85% | 95% | 1 mes |
+
+---
+
+## Herramientas de Testing
+
+### **Análisis Estático**
+```bash
+# PHPStan (Nivel 5)
+./vendor/bin/phpstan analyse --level=5
+
+# Larastan (Extensión para Laravel)
+./vendor/bin/phpstan analyse --configuration=phpstan.neon
+```
+
+### **Testing Automatizado**
+```bash
+# Tests Unitarios
+php artisan test --testsuite=Unit
+
+# Tests de Integración
+php artisan test --testsuite=Feature
+
+# Tests con Cobertura
+php artisan test --coverage
+
+# Tests Específicos
+php artisan test --filter=UserTest
+```
+
+### **Testing de Performance**
+```bash
+# Análisis de consultas
+php artisan telescope:install
+
+# Profiling de memoria
+php artisan debug:memory
+
+# Análisis de rutas
+php artisan route:list --verbose
+```
+
+---
+
+## Checklist de Pruebas por Módulo
+
+### **Módulo de Autenticación**
+- [x] Login/Logout funcional
+- [x] Verificación de email
+- [x] Recuperación de contraseña
+- [x] Middleware de autenticación
+- [ ] Tests de roles y permisos
+- [ ] Tests de tokens API
+
+### **Módulo de Usuarios**
+- [x] CRUD de usuarios
+- [x] Gestión de estados
+- [x] Soft delete
+- [ ] Tests de autorización
+- [ ] Tests de auditoría
+
+### **Módulo de Clientes**
+- [x] CRUD de clientes
+- [x] Relación con usuarios
+- [x] Exportación de datos
+- [ ] Tests de validación
+- [ ] Tests de relaciones
+
+### **Módulo de Productos**
+- [x] CRUD de productos
+- [x] Gestión de stock
+- [x] Categorización
+- [ ] Tests de inventario
+- [ ] Tests de exportación
+
+### **Módulo de Facturas**
+- [x] Creación de facturas
+- [x] Generación de PDF
+- [x] Envío por email
+- [ ] Tests de cálculos
+- [ ] Tests de SRI
+
+---
+
+## Plan de Corrección de Errores PHPStan
+
+### **Fase 1: Corrección Crítica (Semana 1)**
+- [x] Relaciones Eloquent no detectadas
+- [x] Propiedades dinámicas no declaradas
+- [ ] Métodos no implementados
+- [ ] Conflictos de tipos
+
+### **Fase 2: Optimización (Semana 2)**
+- [ ] Variables no inicializadas
+- [ ] Código inalcanzable
+- [ ] Namespaces incorrectos
+- [ ] Anotaciones PHPDoc
+
+### **Fase 3: Documentación (Semana 3)**
+- [ ] Documentación de APIs
+- [ ] Guías de uso
+- [ ] Ejemplos de testing
+- [ ] Mejores prácticas
+
+---
+
+## Estrategia de Testing Continuo
+
+### **Pre-commit Hooks**
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+
+# Ejecutar PHPStan
+./vendor/bin/phpstan analyse --level=5
+if [ $? -ne 0 ]; then
+    echo "❌ PHPStan encontró errores. Commit abortado."
+    exit 1
+fi
+
+# Ejecutar tests rápidos
+php artisan test --testsuite=Unit
+if [ $? -ne 0 ]; then
+    echo "❌ Tests unitarios fallaron. Commit abortado."
+    exit 1
+fi
+
+echo "✅ Pre-commit checks pasaron exitosamente."
+```
+
+### **CI/CD Pipeline**
+```yaml
+# .github/workflows/tests.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+        
+    - name: Run PHPStan
+      run: ./vendor/bin/phpstan analyse --level=5
+        
+    - name: Run tests
+      run: php artisan test --coverage
+```
+
+---
+
+## Métricas de Éxito
+
+### **Corto Plazo (2 semanas)**
+- [ ] 0 errores PHPStan
+- [ ] 70% cobertura de tests
+- [ ] CI/CD pipeline funcional
+- [ ] Documentación actualizada
+
+### **Mediano Plazo (1 mes)**
+- [ ] 80% cobertura unitaria
+- [ ] 90% cobertura de integración
+- [ ] Performance optimizada
+- [ ] Tests automatizados
+
+### **Largo Plazo (3 meses)**
+- [ ] 95% cobertura total
+- [ ] PHPStan nivel 8
+- [ ] Testing de performance
+- [ ] Monitoreo continuo
+
+---
+
+## Guía de Corrección de Errores PHPStan/Larastan
 
 Esta documentación registra de manera sistemática todos los errores detectados por PHPStan/Larastan en el proyecto de inventario Laravel, junto con sus causas, soluciones implementadas y justificaciones técnicas. El objetivo es crear un registro útil para el equipo de desarrollo y facilitar el mantenimiento continuo del código.
 

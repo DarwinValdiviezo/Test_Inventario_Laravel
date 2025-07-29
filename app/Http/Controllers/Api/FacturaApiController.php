@@ -641,11 +641,11 @@ class FacturaApiController extends Controller
                     'detalles' => $factura->detalles->map(function ($detalle) {
                         return [
                             'producto' => $detalle->producto ? $detalle->producto->nombre : null,
-                            'cantidad' => $detalle->cantidad,
-                            'precio_unitario' => $detalle->precio_unitario,
-                            'subtotal' => $detalle->subtotal,
+                            'cantidad' => (int) $detalle->cantidad,
+                            'precio_unitario' => (float) $detalle->precio_unitario,
+                            'subtotal' => (float) $detalle->subtotal,
                         ];
-                    }),
+                    })->toArray(),
                 ];
             });
             return response()->json(['success' => true, 'message' => 'Facturas del cliente obtenidas exitosamente', 'data' => $data]);

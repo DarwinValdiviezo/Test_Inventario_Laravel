@@ -4,6 +4,8 @@ includes:
 parameters:
     paths:
         - app/
+        - routes/
+        - resources/
     level: 5
     excludePaths:
         - app/Console/Commands/*.php
